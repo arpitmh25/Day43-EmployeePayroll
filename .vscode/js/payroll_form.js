@@ -92,47 +92,37 @@ class EmployeePayrollData {
 }
 
 function save() {
-
-    let employeeName = document.querySelector('#name').value;
-    let profileList = document.querySelectorAll('input[name="profile"]');
-    let employeeProfileImage;
-    for (let image of profileList) {
-        if (image.checked) {
-            employeeProfileImage = image.value;
-            break;
-        }
-    }
-
-    let genderList = document.querySelectorAll('input[name="gender"]');
-    let employeeGender;
-    for (let gender of genderList) {
-        if (gender.checked) {
-            employeeGender = gender.value;
-            break;
-        }
-    }
-
-    let departmentList = document.querySelectorAll('.checkbox:checked');
-    let employeeDepartment = new Array();
-    for (let department of departmentList) {
-        if (department.checked) {
-            employeeDepartment.push(department.value);
-        }
-    }
-
-    let employeeSalary = document.querySelector('#salary').value;
-
-    let day = document.querySelector('#day').value;
-    let month = document.querySelector('#month').value;
-    let year = document.querySelector('#year').value;
-    let employeeStartDate = new Date(year, month, day);
-
-    let employeeNotes = document.querySelector('#notes').value;
-
+    let employeePayrollData = new EmployeePayrollData();
     try {
-        let employeePayrollData = new EmployeePayrollData(employeeName, employeeProfileImage, employeeGender, employeeDepartment, employeeSalary, employeeStartDate, employeeNotes);
-        console.log(employeePayrollData.toString());
-    } catch (e) {
-        console.error(e);
+        employeePayrollData.name = document.querySelector("#name").value;
+    } catch (error) {
+        alert(error);
+        return;
     }
+    employeePayrollData.gender = document.querySelector("#male").checked ? "M" : "F";
+    employeePayrollData.salary = document.querySelector("#salary").value;
+    dateString = document.querySelector("#month").value + " " + document.querySelector("#day").value + ", " + document.querySelector("#year").value;
+    try {
+        employeePayrollData.startDate = new Date(dateString);
+    } catch (error) {
+        alert(error);
+        return;
+    }
+    let departmentsArray = [];
+    document.querySelectorAll("[name=department]").forEach(input => {
+        if (input.checked) departmentsArray.push(input.value);
+    });
+    try {
+        employeePayrollData.departments = departmentsArray;
+    } catch (error) {
+        alert(error);
+        return;
+    }
+    alert("Employee Added Successfully!\n" + employeePayrollData.toString());
 }
+
+const salary = document.querySelector("#salary");
+const output = document.querySelector(".salary-output");
+salary.oninput = function() {
+    output.textContent = salary.value;
+};
